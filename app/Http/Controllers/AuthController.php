@@ -11,13 +11,11 @@ use App\Utils\Response;
 use Illuminate\Support\Facades\Hash;
 class AuthController extends Controller
 {
-    public function __construct()
-    {
-        $this->middleware('auth:api', ['except' => ['login']]);
-    }
+   
     public function login(Request $request)
     {
         try {
+
 
             $request->validate([
                 'email' => 'required',

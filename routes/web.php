@@ -16,7 +16,8 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
     return view('welcome');
 });
+Route::post('/login', 'App\Http\Controllers\AuthController@login');
 
-Route::group(['prefix' => '', 'middleware' => 'api'], function () use ($router) {
-    Route::post('/login', 'App\Http\Controllers\AuthController@login');
+Route::group(['middleware' => 'auth:api'], function () use ($router) {
+    Route::post('/create-report', 'App\Http\Controllers\ReportController@generateReport');
 });
