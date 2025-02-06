@@ -16,3 +16,7 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
     return view('welcome');
 });
+
+Route::group(['prefix' => '', 'middleware' => 'api'], function () use ($router) {
+    Route::post('/login', 'App\Http\Controllers\AuthController@login');
+});
