@@ -12,6 +12,16 @@ use App\Jobs\GenerateReportJob;
 class ReportController extends Controller
 
 {
+    public function listReports(Request $request)
+    {
+        try {
+            $reports = Report::all();
+            return response()->json(Response::success(200, 'Reporte en proceso.', $reports->toArray()), 200);
+    
+        } catch (GeneralException $e) {
+            return response()->json(Response::error(500, $e->getMessage(), __FUNCTION__), 500);
+        }
+    }
     public function generateReport(Request $request)
     {
         try {

@@ -18,6 +18,7 @@ Route::get('/', function () {
 });
 Route::post('/login', 'App\Http\Controllers\AuthController@login');
 
-Route::group(['middleware' => 'auth:api'], function () use ($router) {
-    Route::post('/create-report', 'App\Http\Controllers\ReportController@generateReport');
+Route::group(['prefix'=>'api' ,'middleware' => 'auth:api'], function () use ($router) {
+    Route::post('/generate-report', 'App\Http\Controllers\ReportController@generateReport');
+    Route::get('/list-reports', 'App\Http\Controllers\ReportController@listReports');
 });
