@@ -66,9 +66,10 @@ Antes de instalar, asegúrate de tener lo siguiente:
    ```sh
    cp .env.example .env
    ```
-   Editar el archivo `.env` y configurar la base de datos:
+   Editar el archivo `.env` y configurar la base de datos y sistema de colas:
    ```ini
    DB_CONNECTION=sqlite
+   QUEUE_CONNECTION=database
    ```
 
 4. Generar la clave de la aplicación y JWT:
