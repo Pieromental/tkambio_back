@@ -12,7 +12,33 @@ use App\Jobs\GenerateReportJob;
 class ReportController extends Controller
 
 {
-    public function listReports(Request $request)
+    public function getReport($report_id)
+    {
+        try {
+           
+            $report = Report::where('report_id', $report_id)->first();
+
+            if (!$report) {
+                return response()->json(Response::error(404, 'Reporte no encontrado.', __FUNCTION__), 404);
+            }
+
+            if (!$report->report_link) {
+                return response()->json(Response::error(400, 'El reporte aún no tiene un archivo generado.', __FUNCTION__), 400);
+            }
+
+            $filePath = storage_path('app/public/' . str_replace('/storage/', '', $report->report_link));
+
+            if (!file_exists($filePath)) {
+                return response()->json(Response::error(404, 'El archivo del reporte no fue encontrado.', __FUNCTION__), 404);
+            }
+
+            return response()->download($filePath, basename($filePath));
+    
+        } catch (GeneralException $e) {
+            return response()->json(Response::error(500, $e->getMessage(), __FUNCTION__), 500);
+        }
+    }
+    public function listReports()
     {
         try {
             $reports = Report::all();

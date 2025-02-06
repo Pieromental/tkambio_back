@@ -21,4 +21,5 @@ Route::post('/login', 'App\Http\Controllers\AuthController@login');
 Route::group(['prefix'=>'api' ,'middleware' => 'auth:api'], function () use ($router) {
     Route::post('/generate-report', 'App\Http\Controllers\ReportController@generateReport');
     Route::get('/list-reports', 'App\Http\Controllers\ReportController@listReports');
+    Route::get('/download-report/{report_id}', 'App\Http\Controllers\ReportController@getReport');
 });
