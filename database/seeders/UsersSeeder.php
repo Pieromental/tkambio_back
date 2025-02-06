@@ -13,10 +13,22 @@ class UsersSeeder extends Seeder
     public function run(): void
     {
         $faker = Faker::create();
-        $totalRecords = 1000;
+        $totalRecords = 999;
         $batchSize = 250;
         $users = [];
         $password =Hash::make('password123');
+        $admin_id=Str::uuid();
+        User::create([
+            'user_id' => $admin_id,
+            'name' => 'Admin User',
+            'email' => 'admin@example.com', 
+            'password' => Hash::make('adminpassword'), 
+            'birth_date' => '1990-01-01',
+            'active' => true,
+            'created_at' => now(),
+            'created_by' => 'system',
+        ]);
+
         for ($i = 0; $i < $totalRecords; $i++) {
             $users[] = [
                 'user_id' => Str::uuid(),
@@ -26,7 +38,7 @@ class UsersSeeder extends Seeder
                 'birth_date' => $faker->date('Y-m-d', '2005-12-31'),
                 'active' => $faker->boolean(90),
                 'created_at' => now(),
-                'created_by' =>'admin',
+                'created_by' =>$admin_id,
             ];
         }
   
