@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Str;
 use App\Utils\Response;
 use Illuminate\Http\Request;
@@ -41,8 +42,21 @@ class ReportController extends Controller
     public function listReports()
     {
         try {
-            $reports = Report::all();
-            return response()->json(Response::success(200, 'Reporte en proceso.', $reports->toArray()), 200);
+            $reports = Report::all()->map(function ($report) {
+                return [
+                    'report_id' => $report->report_id,
+                    'user_id' => $report->user_id,
+                    'title' => $report->title,
+                    'description' => $report->description,
+                    'report_link' => $report->report_link,
+                    'active' => $report->active,
+                    'created_by' => $report->created_by,
+                    'updated_by' => $report->updated_by,
+                    'created_at' => Carbon::parse($report->created_at)->format('d/m/Y'),
+                    'updated_at' => $report->updated_at ? Carbon::parse($report->updated_at)->format('d/m/Y') : null,
+                ];
+            })->toArray();
+            return response()->json(Response::success(200, 'Reporte en proceso.', $reports), 200);
     
         } catch (GeneralException $e) {
             return response()->json(Response::error(500, $e->getMessage(), __FUNCTION__), 500);
