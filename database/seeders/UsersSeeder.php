@@ -17,17 +17,18 @@ class UsersSeeder extends Seeder
         $batchSize = 250;
         $users = [];
         $password =Hash::make('password123');
-        $admin_id=Str::uuid();
-        User::create([
-            'user_id' => $admin_id,
-            'name' => 'Admin User',
-            'email' => 'admin@example.com', 
-            'password' => Hash::make('adminpassword'), 
-            'birth_date' => '1990-01-01',
-            'active' => true,
-            'created_at' => now(),
-            'created_by' => 'system',
-        ]);
+        $admin = User::firstOrCreate(
+            ['email' => 'admin@example.com'], // Buscar por email
+            [
+                'user_id' => Str::uuid(),
+                'name' => 'Admin User',
+                'password' => Hash::make('adminpassword'),
+                'birth_date' => '1990-01-01',
+                'active' => true,
+                'created_at' => now(),
+                'created_by' => 'system',
+            ]
+        );
 
         for ($i = 0; $i < $totalRecords; $i++) {
             $users[] = [
@@ -38,7 +39,7 @@ class UsersSeeder extends Seeder
                 'birth_date' => $faker->date('Y-m-d', '2005-12-31'),
                 'active' => $faker->boolean(90),
                 'created_at' => now(),
-                'created_by' =>$admin_id,
+                'created_by' =>$admin->user_id,
             ];
         }
   

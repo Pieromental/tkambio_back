@@ -1,0 +1,31 @@
+version: '3.8'
+
+services:
+  app:
+    build: .
+    container_name: laravel_app
+    restart: unless-stopped
+    working_dir: /var/www/html
+    volumes:
+      - .:/var/www/html
+      - ./database/database.sqlite:/var/www/html/database/database.sqlite
+    ports:
+      - '8000:80'
+    environment:
+      - APP_ENV=local
+      - APP_DEBUG=true
+      - QUEUE_CONNECTION=database
+    command: >
+      sh -c "touch database/database.sqlite && php artisan migrate --seed && apache2-foreground"
+
+  queue-worker:
+    build: .
+    container_name: laravel_queue_worker
+    restart: unless-stopped
+    working_dir: /var/www/html
+    depends_on:
+      - app
+    volumes:
+      - .:/var/www/html
+      - ./database/database.sqlite:/var/www/html/database/database.sqlite
+    command: php artisan queue:work
