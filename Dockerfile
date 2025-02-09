@@ -1,10 +1,10 @@
-# Usa PHP con Apache
+
 FROM php:8.1-apache
 
-# Instala dependencias del sistema y extensiones de PHP
 RUN apt-get update && apt-get install -y \
     unzip \
     git \
+    sqlite3 \
     libsqlite3-dev \
     libpng-dev \
     libzip-dev \
@@ -12,33 +12,34 @@ RUN apt-get update && apt-get install -y \
     && docker-php-ext-install pdo_sqlite gd zip \
     && a2enmod rewrite
 
-# Instala Composer
+
+RUN a2enmod rewrite headers
+
+
+ENV APACHE_DOCUMENT_ROOT=/var/www/html/public
+RUN sed -ri -e 's!/var/www/html!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/sites-available/*.conf
+RUN sed -ri -e 's!/var/www/!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/apache2.conf /etc/apache2/conf-available/*.conf
+
+
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
-# Configurar permisos para evitar errores de Git
-RUN git config --global --add safe.directory /var/www/html
 
-# Cambia `DocumentRoot` en Apache para que sirva Laravel desde `public/`
-RUN sed -i 's|/var/www/html|/var/www/html/public|' /etc/apache2/sites-available/000-default.conf
 
-# Habilita mod_rewrite para que Laravel maneje rutas amigables
-RUN a2enmod rewrite
-
-# Copia los archivos del proyecto
 WORKDIR /var/www/html
-COPY . .
 
-# Instalar dependencias de Laravel
-RUN composer install --no-dev --no-interaction --optimize-autoloader
 
-# Dar permisos a Laravel
-RUN chmod -R 775 storage bootstrap/cache
+COPY . /var/www/html
 
-# Generar clave de aplicación
-RUN php artisan key:generate
 
-# Exponer puerto
+RUN chown -R www-data:www-data /var/www/html \
+    && chmod -R 755 /var/www/html \
+    && chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache
+
+
+RUN composer install --optimize-autoloader
+
+
 EXPOSE 80
 
-# Comando de inicio
+
 CMD ["apache2-foreground"]
