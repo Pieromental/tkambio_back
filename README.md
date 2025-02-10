@@ -159,15 +159,18 @@ Antes de instalar, asegúrate de tener lo siguiente:
 ### Autenticación con JWT
 
 -   **Login:** `POST /login`
--   **Obtener usuario autenticado:** `GET /user` (requiere token)
--   **Logout:** `POST /logout`
+    -   **API:** `http://localhost:8000/login` 
 
 ### Generación de Reportes
 
 -   **Crear reporte:** `POST /api/generate-report`
     -   Requiere `title`, `start_date`, `end_date`
+    -   **API:** `http://localhost:8000/api/generate-report` 
+
 -   **Listar reportes:** `GET /api/list-reports`
+    -   **API:** `http://localhost:8000/api/list-reports` 
 -   **Descargar reporte:** `GET /api/download-report/{report_id}`
+    -   **API:** `http://localhost:8000/api/download-report/2eb3a12c-407f-4514-8216-dbebb2053026/` 
 
 
 ### 🔑 Credenciales de prueba
