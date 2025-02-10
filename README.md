@@ -145,7 +145,11 @@ Antes de instalar, asegúrate de tener lo siguiente:
     ```sh
     php artisan serve
     ```
-6. Si prefieres levantar el proyecto usando docker:
+6. Inicar el worker quee ecucha los jobs de la cola:
+    ```sh
+      php artisan queue:work
+    ```
+7. Si prefieres levantar el proyecto usando docker:
     ```sh
     docker-compose up -d --build
     ```
@@ -165,6 +169,7 @@ Antes de instalar, asegúrate de tener lo siguiente:
 -   **Listar reportes:** `GET /api/list-reports`
 -   **Descargar reporte:** `GET /api/download-report/{report_id}`
 
+
 ### 🔑 Credenciales de prueba
 
 Para poder loguearte, usa las siguientes credenciales:
@@ -176,11 +181,4 @@ Para poder loguearte, usa las siguientes credenciales:
    }
 ```
 
-## Manejo de Jobs
-
-Para procesar reportes en background:
-
-```sh
-php artisan queue:work
-```
 
