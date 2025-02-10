@@ -2,8 +2,7 @@
 
 ## Descripción
 
-Este es el backend del proyecto **TKAMBIO**, desarrollado en Laravel. Proporciona autenticación con JWT, generación de reportes en Excel y almacenamiento de archivos. Actualmente, utiliza **SQLite** como base de datos y jobs en base de datos. Próximamente será dockerizado.
-
+Este es el backend del proyecto **TKAMBIO**, desarrollado en Laravel. Proporciona autenticación con JWT, generación de reportes en Excel y almacenamiento de archivos, se utilizan colas para realizar acciones en segundo plano y se usa SOKETI para manejo de WebSockets. Para poder trabajar con WEBSOCKETS es necesario levantar el proyecto usando Docker ya que se ha configurado el para tener un container que levante el WEBSOCKET de SOKETI. Actualmente, utiliza **SQLite** como base de datos y jobs en base de datos.
 ## Tecnologías Utilizadas
 
 -   **Laravel** (versión compatible con PHP 8.1.10)
@@ -11,7 +10,11 @@ Este es el backend del proyecto **TKAMBIO**, desarrollado en Laravel. Proporcion
 -   **JWT Authentication**
 -   **SQLite como base de datos**
 -   **Queue con Database**
+-   **Pusher**
+-   **Docker version 26.1.1
+-   **Docker Compose version v2.27.0-desktop.2
 -   **Maatwebsite/Excel** para generar reportes en Excel
+  
 
 ## Requisitos Previos
 
@@ -75,30 +78,76 @@ Antes de instalar, asegúrate de tener lo siguiente:
 3. Copiar archivo de entorno y configurar:
 
     ```sh
-    cp .env.example .env
-    ```
-
-    Editar el archivo `.env` y configurar la base de datos y sistema de colas:
-
-    ```ini
+    APP_NAME=Laravel
+    APP_ENV=local
+    APP_KEY=base64:vj/hoXSZh70VeIRfegGqLMuL+SQcD1QwnCZBS8L4/t0=
+    APP_DEBUG=true
+    APP_URL=http://localhost
+    
+    LOG_CHANNEL=stack
+    LOG_DEPRECATIONS_CHANNEL=null
+    LOG_LEVEL=debug
+    
     DB_CONNECTION=sqlite
+    
+    BROADCAST_DRIVER=pusher
+    CACHE_DRIVER=file
+    FILESYSTEM_DISK=local
     QUEUE_CONNECTION=database
+    SESSION_DRIVER=file
+    SESSION_LIFETIME=120
+    
+    MEMCACHED_HOST=127.0.0.1
+    
+    REDIS_HOST=127.0.0.1
+    REDIS_PASSWORD=null
+    REDIS_PORT=6379
+    
+    MAIL_MAILER=smtp
+    MAIL_HOST=mailpit
+    MAIL_PORT=1025
+    MAIL_USERNAME=null
+    MAIL_PASSWORD=null
+    MAIL_ENCRYPTION=null
+    MAIL_FROM_ADDRESS="hello@example.com"
+    MAIL_FROM_NAME="${APP_NAME}"
+    
+    AWS_ACCESS_KEY_ID=
+    AWS_SECRET_ACCESS_KEY=
+    AWS_DEFAULT_REGION=us-east-1
+    AWS_BUCKET=
+    AWS_USE_PATH_STYLE_ENDPOINT=false
+    
+    PUSHER_APP_ID=local-app-id
+    PUSHER_APP_KEY=local-app-key
+    PUSHER_APP_SECRET=local-app-secret
+    PUSHER_HOST=soketi
+    PUSHER_PORT=6001
+    PUSHER_SCHEME=http
+    PUSHER_APP_CLUSTER=mt1
+    
+    VITE_APP_NAME="${APP_NAME}"
+    VITE_PUSHER_APP_KEY="${PUSHER_APP_KEY}"
+    VITE_PUSHER_HOST="${PUSHER_HOST}"
+    VITE_PUSHER_PORT="${PUSHER_PORT}"
+    VITE_PUSHER_SCHEME="${PUSHER_SCHEME}"
+    VITE_PUSHER_APP_CLUSTER="${PUSHER_APP_CLUSTER}"
+    
+    JWT_SECRET=UpFL7l2nMtzukKA28SFMh6X1hPiIv5vGUsEZudpERijPi4xuCNYBafBubY8sxB68
+
     ```
 
-4. Generar la clave de la aplicación y JWT:
-
+4. Ejecutar migraciones y seeders:
     ```sh
-    php artisan key:generate
-    php artisan jwt:secret
+    php artisan migrate:fresh --seed --force
     ```
-
-5. Ejecutar migraciones y seeders:
-    ```sh
-    php artisan migrate --seed
-    ```
-6. Iniciar el servidor:
+5. Iniciar el servidor:
     ```sh
     php artisan serve
+    ```
+6. Si prefieres levantar el proyecto usando docker:
+    ```sh
+    docker-compose up -d --build
     ```
 
 ## Uso de API
@@ -135,16 +184,3 @@ Para procesar reportes en background:
 php artisan queue:work
 ```
 
-## Ignorar Archivos en Git
-
-Para evitar que los archivos Excel generados se suban a Git, asegúrate de agregar esta línea en `.gitignore`:
-
-```
-storage/app/public/reports/*.xlsx
-```
-
-## Próximos Pasos
-
--   Dockerizar la aplicación
--   Mejorar la documentación de la API
--   Implementar WebSockets para notificaciones en tiempo real
