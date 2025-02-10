@@ -11,9 +11,9 @@ Este es el backend del proyecto **TKAMBIO**, desarrollado en Laravel. Proporcion
 -   **SQLite como base de datos**
 -   **Queue con Database**
 -   **Pusher**
--   **Docker version 26.1.1
--   **Docker Compose version v2.27.0-desktop.2
--   **Maatwebsite/Excel** para generar reportes en Excel
+-   **Docker version 26.1.1**
+-   **Docker Compose version v2.27.0-desktop.2**
+-   **Maatwebsite/Excel** para generar reportes en Excel**
   
 
 ## Requisitos Previos
