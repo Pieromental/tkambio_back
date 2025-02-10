@@ -12,7 +12,7 @@ use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Log;
-
+use App\Events\ReportGenerated;
 class GenerateReportJob implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
@@ -31,14 +31,15 @@ class GenerateReportJob implements ShouldQueue
         try {
        
             $fileName = 'reports/users_report_' . now()->format('YmdHis') . '.xlsx';
-        
             Excel::store(new UsersExport($this->users), $fileName, 'public');
-        
             $fileUrl = Storage::url($fileName);
 
             Report::where('report_id', $this->reportId)->update([
                 'report_link' => $fileUrl
             ]);
+
+            broadcast(new ReportGenerated($this->reportId));
+
         } catch (\Exception $e) {
             Log::error("Error generando el reporte: " . $e->getMessage());
         }
